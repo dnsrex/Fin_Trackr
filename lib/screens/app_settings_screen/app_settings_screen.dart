@@ -6,7 +6,11 @@ import 'package:fin_trackr/screens/app_settings_screen/currency_selector/currenc
 import 'package:fin_trackr/screens/app_settings_screen/expense_category_settings/expense_category_list_view.dart';
 import 'package:fin_trackr/screens/app_settings_screen/income_category_settings/income_category_list_view.dart';
 import 'package:fin_trackr/screens/app_settings_screen/user_guide/user_guide_settings.dart';
+import 'package:fin_trackr/screens/authentication/MultiFactorAuth/EnroleMFAPage.dart';
+import 'package:fin_trackr/screens/authentication/loginPage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:ionicons/ionicons.dart';
 import 'dart:math' as math;
 
@@ -336,6 +340,96 @@ class AppSettingsScreen extends StatelessWidget {
                     ),
                   ),
                 ),
+                InkWell(
+                  splashFactory: NoSplash.splashFactory,
+                  onTap: () async {
+                    final user = FirebaseAuth.instance.currentUser;
+
+                    if (user != null) {
+                      FirebaseAuth.instance.signOut();
+                      final providerData = user.providerData;
+                      for (var userInfo in providerData) {
+                        if (userInfo.providerId == 'google.com') {
+                          print('User is signed in with Google');
+                          GoogleSignIn().signOut();
+                        } else if (userInfo.providerId == 'password') {
+                          print('User is signed in with email and password');
+                        }
+                      }
+                    } else {
+                      print('User is not signed in');
+                    }
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LoginPage(),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Ionicons.log_out_outline,
+                          size: 25,
+                          color: AppColor.ftBottomNavigatorUnSelectorColor,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          'Log Out',
+                          style: TextStyle(
+                            color: AppColor.ftBottomNavigatorUnSelectorColor,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Builder(
+                  builder: (context) {
+                    return InkWell(
+                      splashFactory: NoSplash.splashFactory,
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => EnroleMFAPage(),
+                        ));
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Ionicons.lock_closed,
+                              size: 25,
+                              color: AppColor.ftBottomNavigatorUnSelectorColor,
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              'MFA',
+                              style: TextStyle(
+                                color:
+                                AppColor.ftBottomNavigatorUnSelectorColor,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                )
               ],
             ),
           ),

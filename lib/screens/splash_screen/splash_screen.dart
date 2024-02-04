@@ -1,7 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:fin_trackr/constants/constant.dart';
+import 'package:fin_trackr/screens/MainPage.dart';
+import 'package:fin_trackr/screens/authentication/loginPage.dart'
 import 'package:fin_trackr/screens/home/home_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -21,12 +24,29 @@ class _SplashScreenState extends State<SplashScreen> {
 
   _navigateHome() async {
     await Future.delayed(const Duration(milliseconds: 1500), () {});
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => HoemeScreen(),
-      ),
-    );
+    // Navigator.pushReplacement(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => MainPage(),
+    //   ),
+    // );
+
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HoemeScreen(),
+        ),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => LoginPage(),
+        ),
+      );
+    }
   }
 
   @override
