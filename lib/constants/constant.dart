@@ -32,7 +32,7 @@ class AppColor {
 }
 
 class AppText {
-  static const String appName = 'FinTrackr';
+  static const String appName = 'FinTrackr-- SAVE.IT';
   static const String appVersion = 'Version 1.0.0';
   static const String appVersionNumber = ' 1.0.0';
   static const String appUpdateDate = '27-Aug-2023';
